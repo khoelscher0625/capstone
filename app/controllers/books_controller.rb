@@ -11,10 +11,12 @@ class BooksController < ApplicationController
   end
 
   def create
-    @book = current_user.book.create(book_params)
-      if @book.valid?
-        redirect_to root_path
-      else
+    @book = current_user.books.create(book_params)
+    if @book.valid?
+      flash[:notice] = "Book successfully added"
+      redirect_to root_path
+    else
+      flash.now[:alert] = "Book not added"
       render :new, status: :unprocessable_entity
     end
   end
@@ -37,7 +39,7 @@ class BooksController < ApplicationController
       return render plain: 'Not Allowed', status: :forbidden
     end
 
-    @book.update_attributes(place_params)
+    @book.update_attributes(book_params)
     if @book.valid?
       redirect_to root_path
     else
